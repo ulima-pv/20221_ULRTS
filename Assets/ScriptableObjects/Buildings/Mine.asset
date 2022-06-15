@@ -1,0 +1,16 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f91b70d3d4de18946a36e3f5dd096f25, type: 3}
+  m_Name: Mine
+  m_EditorClassIdentifier: 
+  nameString: Mina
+  prefab: {fileID: 7241626921994828945, guid: baf58ed317952154a82198a0bfd3d940, type: 3}
