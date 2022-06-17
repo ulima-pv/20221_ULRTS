@@ -14,3 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   nameString: Aserradero
   prefab: {fileID: 1375972440173285839, guid: d5129e65e1ee2534bba9ce40943ba272, type: 3}
+  sprite: {fileID: 21300000, guid: 92c03737794a75f43b2aab83423a5f51, type: 3}

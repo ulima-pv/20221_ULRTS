@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 
 public class BuildingManager : MonoBehaviour
@@ -45,18 +46,21 @@ public class BuildingManager : MonoBehaviour
 
     private void OnMouseSelected(InputAction.CallbackContext obj)
     {
-        Vector2 mousePos = mMouseMovementAction.ReadValue<Vector2>();
-        // Lanzar el Raycast
-        mRay = mCamera.ScreenPointToRay(mousePos);
-        if (Physics.Raycast(
-            mRay,
-            out mHit,
-            1000f
-            ))
+        if (!EventSystem.current.IsPointerOverGameObject())
         {
-            // Instanciar el primer elemento de nuestro buildingTypeList
-            Instantiate(mBuildingTypeList[mCurrentBuildingIndex].prefab, 
-                mHit.point, Quaternion.identity);
+            Vector2 mousePos = mMouseMovementAction.ReadValue<Vector2>();
+            // Lanzar el Raycast
+            mRay = mCamera.ScreenPointToRay(mousePos);
+            if (Physics.Raycast(
+                mRay,
+                out mHit,
+                1000f
+                ))
+            {
+                // Instanciar el primer elemento de nuestro buildingTypeList
+                Instantiate(mBuildingTypeList[mCurrentBuildingIndex].prefab, 
+                    mHit.point, Quaternion.identity);
+            }
         }
         
     }

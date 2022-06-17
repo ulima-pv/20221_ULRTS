@@ -53,6 +53,24 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""CameraMovement"",
+                    ""type"": ""Value"",
+                    ""id"": ""58a88528-2a90-43d6-8bb1-3c48add3f6b2"",
+                    ""expectedControlType"": ""Vector2"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""CameraScroll"",
+                    ""type"": ""Value"",
+                    ""id"": ""4096ebe0-c768-46ae-9efe-627b68bf76ad"",
+                    ""expectedControlType"": ""Vector2"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
                 }
             ],
             ""bindings"": [
@@ -88,6 +106,72 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
                     ""action"": ""TabPressed"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""WASD"",
+                    ""id"": ""20a85114-41ea-4267-90bf-3ae5cee9605d"",
+                    ""path"": ""2DVector"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""CameraMovement"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""up"",
+                    ""id"": ""04002fa8-5dee-4543-90c1-da6aa35c9572"",
+                    ""path"": ""<Keyboard>/w"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""CameraMovement"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""down"",
+                    ""id"": ""5963cc16-0640-40a7-a6d2-bf9f73c39751"",
+                    ""path"": ""<Keyboard>/s"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""CameraMovement"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""left"",
+                    ""id"": ""23e7218a-a7f1-4bb7-bc42-8d154823f9f2"",
+                    ""path"": ""<Keyboard>/a"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""CameraMovement"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""right"",
+                    ""id"": ""1647d751-28d6-4952-ba29-60279a5f9d84"",
+                    ""path"": ""<Keyboard>/d"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""CameraMovement"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""ffa56220-f93a-4365-bb47-fe51fb460073"",
+                    ""path"": ""<Mouse>/scroll"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""CameraScroll"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -99,6 +183,8 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
         m_Player_MouseSelect = m_Player.FindAction("MouseSelect", throwIfNotFound: true);
         m_Player_MouseMovement = m_Player.FindAction("MouseMovement", throwIfNotFound: true);
         m_Player_TabPressed = m_Player.FindAction("TabPressed", throwIfNotFound: true);
+        m_Player_CameraMovement = m_Player.FindAction("CameraMovement", throwIfNotFound: true);
+        m_Player_CameraScroll = m_Player.FindAction("CameraScroll", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -161,6 +247,8 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_MouseSelect;
     private readonly InputAction m_Player_MouseMovement;
     private readonly InputAction m_Player_TabPressed;
+    private readonly InputAction m_Player_CameraMovement;
+    private readonly InputAction m_Player_CameraScroll;
     public struct PlayerActions
     {
         private @PlayerInputActions m_Wrapper;
@@ -168,6 +256,8 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
         public InputAction @MouseSelect => m_Wrapper.m_Player_MouseSelect;
         public InputAction @MouseMovement => m_Wrapper.m_Player_MouseMovement;
         public InputAction @TabPressed => m_Wrapper.m_Player_TabPressed;
+        public InputAction @CameraMovement => m_Wrapper.m_Player_CameraMovement;
+        public InputAction @CameraScroll => m_Wrapper.m_Player_CameraScroll;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -186,6 +276,12 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
                 @TabPressed.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnTabPressed;
                 @TabPressed.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnTabPressed;
                 @TabPressed.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnTabPressed;
+                @CameraMovement.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnCameraMovement;
+                @CameraMovement.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnCameraMovement;
+                @CameraMovement.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnCameraMovement;
+                @CameraScroll.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnCameraScroll;
+                @CameraScroll.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnCameraScroll;
+                @CameraScroll.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnCameraScroll;
             }
             m_Wrapper.m_PlayerActionsCallbackInterface = instance;
             if (instance != null)
@@ -199,6 +295,12 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
                 @TabPressed.started += instance.OnTabPressed;
                 @TabPressed.performed += instance.OnTabPressed;
                 @TabPressed.canceled += instance.OnTabPressed;
+                @CameraMovement.started += instance.OnCameraMovement;
+                @CameraMovement.performed += instance.OnCameraMovement;
+                @CameraMovement.canceled += instance.OnCameraMovement;
+                @CameraScroll.started += instance.OnCameraScroll;
+                @CameraScroll.performed += instance.OnCameraScroll;
+                @CameraScroll.canceled += instance.OnCameraScroll;
             }
         }
     }
@@ -208,5 +310,7 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
         void OnMouseSelect(InputAction.CallbackContext context);
         void OnMouseMovement(InputAction.CallbackContext context);
         void OnTabPressed(InputAction.CallbackContext context);
+        void OnCameraMovement(InputAction.CallbackContext context);
+        void OnCameraScroll(InputAction.CallbackContext context);
     }
 }
