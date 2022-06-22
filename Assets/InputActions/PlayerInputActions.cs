@@ -71,6 +71,15 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""EscPressed"",
+                    ""type"": ""Button"",
+                    ""id"": ""c733344e-ca1b-4931-8196-f531d34045a7"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -172,6 +181,17 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
                     ""action"": ""CameraScroll"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""a8d8f5cc-a3a6-49e7-a60b-468a31a62f68"",
+                    ""path"": ""<Keyboard>/escape"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""EscPressed"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -185,6 +205,7 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
         m_Player_TabPressed = m_Player.FindAction("TabPressed", throwIfNotFound: true);
         m_Player_CameraMovement = m_Player.FindAction("CameraMovement", throwIfNotFound: true);
         m_Player_CameraScroll = m_Player.FindAction("CameraScroll", throwIfNotFound: true);
+        m_Player_EscPressed = m_Player.FindAction("EscPressed", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -249,6 +270,7 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_TabPressed;
     private readonly InputAction m_Player_CameraMovement;
     private readonly InputAction m_Player_CameraScroll;
+    private readonly InputAction m_Player_EscPressed;
     public struct PlayerActions
     {
         private @PlayerInputActions m_Wrapper;
@@ -258,6 +280,7 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
         public InputAction @TabPressed => m_Wrapper.m_Player_TabPressed;
         public InputAction @CameraMovement => m_Wrapper.m_Player_CameraMovement;
         public InputAction @CameraScroll => m_Wrapper.m_Player_CameraScroll;
+        public InputAction @EscPressed => m_Wrapper.m_Player_EscPressed;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -282,6 +305,9 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
                 @CameraScroll.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnCameraScroll;
                 @CameraScroll.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnCameraScroll;
                 @CameraScroll.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnCameraScroll;
+                @EscPressed.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnEscPressed;
+                @EscPressed.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnEscPressed;
+                @EscPressed.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnEscPressed;
             }
             m_Wrapper.m_PlayerActionsCallbackInterface = instance;
             if (instance != null)
@@ -301,6 +327,9 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
                 @CameraScroll.started += instance.OnCameraScroll;
                 @CameraScroll.performed += instance.OnCameraScroll;
                 @CameraScroll.canceled += instance.OnCameraScroll;
+                @EscPressed.started += instance.OnEscPressed;
+                @EscPressed.performed += instance.OnEscPressed;
+                @EscPressed.canceled += instance.OnEscPressed;
             }
         }
     }
@@ -312,5 +341,6 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
         void OnTabPressed(InputAction.CallbackContext context);
         void OnCameraMovement(InputAction.CallbackContext context);
         void OnCameraScroll(InputAction.CallbackContext context);
+        void OnEscPressed(InputAction.CallbackContext context);
     }
 }

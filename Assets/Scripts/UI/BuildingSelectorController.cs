@@ -27,7 +27,7 @@ public class BuildingSelectorController : MonoBehaviour
                 new Vector2(index * offset , 0f);
             newButton.GetComponent<Button>().onClick.AddListener(() =>
             {
-                Debug.Log(buildingType);
+                BuildingManager.Instance.SetCurrentBuilding(buildingType);
             });
             index++;
         }

@@ -6,6 +6,8 @@ using UnityEngine.InputSystem;
 
 public class BuildingManager : MonoBehaviour
 {
+    public static BuildingManager Instance { private set; get; }
+
     private PlayerInputActions mPlayerInputActions;
     private InputAction mMouseMovementAction;
     private Camera mCamera;
@@ -13,9 +15,13 @@ public class BuildingManager : MonoBehaviour
     private RaycastHit mHit;
     private List<BuildingTypeSO> mBuildingTypeList;
     private int mCurrentBuildingIndex = 0;
+    private BuildingTypeSO mCurrentBuilding = null;
+    private bool mMouseClicked = false;
 
     private void Awake()
     {
+        Instance = this;
+
         mPlayerInputActions = new PlayerInputActions();
 
         mBuildingTypeList = Resources.Load<BuildingTypeListSO>("BuildingList").list;
@@ -27,12 +33,58 @@ public class BuildingManager : MonoBehaviour
         mCamera = Camera.main;
     }
 
+    private void Update()
+    {
+        if (mMouseClicked)
+        {
+            if (!EventSystem.current.IsPointerOverGameObject())
+            {
+
+                Vector2 mousePos = mMouseMovementAction.ReadValue<Vector2>();
+
+                // Lanzar el Raycast
+                mRay = mCamera.ScreenPointToRay(mousePos);
+                if (Physics.Raycast(
+                    mRay,
+                    out mHit,
+                    1000f
+                    ))
+                {
+                    if (mCurrentBuilding != null)
+                    {
+                        //Modo Construccion
+                        // Instanciar el primer elemento de nuestro buildingTypeList
+                        Instantiate(mCurrentBuilding.prefab,
+                            mHit.point, Quaternion.identity);
+                    }else
+                    {
+                        // Modo seleccion
+
+                        Building building = mHit.collider.GetComponent<Building>();
+                        if (building != null)
+                        {
+                            building.SetActive(true);
+                        }
+                    }
+                }
+                
+            }
+            mMouseClicked = false;
+        }
+    }
+
     private void OnEnable()
     {
         mMouseMovementAction = mPlayerInputActions.Player.MouseMovement;
         mPlayerInputActions.Player.MouseSelect.performed += OnMouseSelected;
         mPlayerInputActions.Player.TabPressed.performed += OnTabPressed;
+        mPlayerInputActions.Player.EscPressed.performed += OnEscPressed;
         mPlayerInputActions.Enable();
+    }
+
+    private void OnEscPressed(InputAction.CallbackContext obj)
+    {
+        mCurrentBuilding = null;
     }
 
     private void OnTabPressed(InputAction.CallbackContext obj)
@@ -46,23 +98,7 @@ public class BuildingManager : MonoBehaviour
 
     private void OnMouseSelected(InputAction.CallbackContext obj)
     {
-        if (!EventSystem.current.IsPointerOverGameObject())
-        {
-            Vector2 mousePos = mMouseMovementAction.ReadValue<Vector2>();
-            // Lanzar el Raycast
-            mRay = mCamera.ScreenPointToRay(mousePos);
-            if (Physics.Raycast(
-                mRay,
-                out mHit,
-                1000f
-                ))
-            {
-                // Instanciar el primer elemento de nuestro buildingTypeList
-                Instantiate(mBuildingTypeList[mCurrentBuildingIndex].prefab, 
-                    mHit.point, Quaternion.identity);
-            }
-        }
-        
+        mMouseClicked = true;
     }
 
     private void OnDisable()
@@ -74,5 +110,10 @@ public class BuildingManager : MonoBehaviour
     {
         Gizmos.color = Color.red;
         Gizmos.DrawSphere(mHit.point, 1f);
+    }
+
+    public void SetCurrentBuilding(BuildingTypeSO buildingType)
+    {
+        mCurrentBuilding = buildingType;
     }
 }
