@@ -15,3 +15,4 @@ MonoBehaviour:
   nameString: Mina
   prefab: {fileID: 7241626921994828945, guid: baf58ed317952154a82198a0bfd3d940, type: 3}
   sprite: {fileID: 21300000, guid: ba7b28713f87b354d81ccd5d2ba5a30a, type: 3}
+  resourceType: {fileID: 11400000, guid: c5f8780fcf6aac84bad4ec93c8580eec, type: 2}
