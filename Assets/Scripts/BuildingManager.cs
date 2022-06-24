@@ -18,6 +18,8 @@ public class BuildingManager : MonoBehaviour
     private BuildingTypeSO mCurrentBuilding = null;
     private bool mMouseClicked = false;
 
+    private List<Building> mSelectedBuildings;
+
     private void Awake()
     {
         Instance = this;
@@ -25,7 +27,7 @@ public class BuildingManager : MonoBehaviour
         mPlayerInputActions = new PlayerInputActions();
 
         mBuildingTypeList = Resources.Load<BuildingTypeListSO>("BuildingList").list;
-
+        mSelectedBuildings = new List<Building>();
     }
 
     private void Start()
@@ -54,8 +56,11 @@ public class BuildingManager : MonoBehaviour
                     {
                         //Modo Construccion
                         // Instanciar el primer elemento de nuestro buildingTypeList
-                        Instantiate(mCurrentBuilding.prefab,
-                            mHit.point, Quaternion.identity);
+                        if (CanSpawnBuilding(mHit.point, mCurrentBuilding))
+                        {
+                            Instantiate(mCurrentBuilding.prefab,
+                                mHit.point, Quaternion.identity);
+                        }
                     }else
                     {
                         // Modo seleccion
@@ -64,6 +69,15 @@ public class BuildingManager : MonoBehaviour
                         if (building != null)
                         {
                             building.SetActive(true);
+                            mSelectedBuildings.Add(building);
+                        }
+                        else
+                        {
+                            // Deseleccionar todos los buildings
+                            foreach(var selectedBuilding in mSelectedBuildings)
+                            {
+                                selectedBuilding.SetActive(false);
+                            }
                         }
                     }
                 }
@@ -115,5 +129,28 @@ public class BuildingManager : MonoBehaviour
     public void SetCurrentBuilding(BuildingTypeSO buildingType)
     {
         mCurrentBuilding = buildingType;
+    }
+
+    private bool CanSpawnBuilding(Vector3 position, BuildingTypeSO building)
+    {
+        BoxCollider buildingCollider = building.prefab.GetComponent<BoxCollider>();
+        Collider[] colliders = Physics.OverlapBox(
+            position,
+            new Vector3(
+                buildingCollider.size.x / 2f,
+                buildingCollider.size.y / 2f,
+                buildingCollider.size.z / 2f
+            )
+        );
+
+        // TODO: Mejorar con layerMask
+        foreach(var collider in colliders)
+        {
+            if (collider.GetComponent<Building>() != null)
+            {
+                return false;
+            }
+        }
+        return true;
     }
 }
