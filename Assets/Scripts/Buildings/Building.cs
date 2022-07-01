@@ -10,6 +10,7 @@ public class Building : MonoBehaviour
     private float mTimer = 0f;
     private float mTimerMax;
     private int mNearbyResources = 0;
+    private bool mCanGenerate = false;
 
     private void Start()
     {
@@ -24,18 +25,23 @@ public class Building : MonoBehaviour
                 nearbyResources++;
             }
         }
+        if (nearbyResources > 0) mCanGenerate = true;
+
         mNearbyResources = nearbyResources;
-        // TODO: Cambiar el timerMax en base a recursos cercanos
-        mTimerMax = buildingType.resourceType.generatorData.timerMax;
+        ResourceGeneratorData generatorData = buildingType.resourceType.generatorData;
+        mTimerMax = generatorData.timerMax - (mNearbyResources / generatorData.maxResources) + 0.5f;
     }
     private void Update()
     {
-        mTimer += Time.deltaTime;
-        if (mTimer > mTimerMax)
+        if (mCanGenerate)
         {
-            // Generar un recurso
-            GenerateResource();
-            mTimer = 0f;
+            mTimer += Time.deltaTime;
+            if (mTimer > mTimerMax)
+            {
+                // Generar un recurso
+                GenerateResource();
+                mTimer = 0f;
+            }
         }
     }
 
