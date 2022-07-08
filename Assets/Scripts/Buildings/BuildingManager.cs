@@ -4,8 +4,14 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 
+
 public class BuildingManager : MonoBehaviour
 {
+    public enum Mode
+    {
+        Builder, Selection
+    }
+
     public static BuildingManager Instance { private set; get; }
 
     private PlayerInputActions mPlayerInputActions;
@@ -17,6 +23,8 @@ public class BuildingManager : MonoBehaviour
     private int mCurrentBuildingIndex = 0;
     private BuildingTypeSO mCurrentBuilding = null;
     private bool mMouseClicked = false;
+    private bool mMouseRightClicked = false;
+    private Mode mMode;
 
     private List<Building> mSelectedBuildings;
 
@@ -28,6 +36,7 @@ public class BuildingManager : MonoBehaviour
 
         mBuildingTypeList = Resources.Load<BuildingTypeListSO>("BuildingList").list;
         mSelectedBuildings = new List<Building>();
+        mMode = Mode.Selection;
     }
 
     private void Start()
@@ -52,7 +61,7 @@ public class BuildingManager : MonoBehaviour
                     1000f
                     ))
                 {
-                    if (mCurrentBuilding != null)
+                    if (mMode != Mode.Selection)
                     {
                         //Modo Construccion
                         // Instanciar el primer elemento de nuestro buildingTypeList
@@ -73,17 +82,53 @@ public class BuildingManager : MonoBehaviour
                         }
                         else
                         {
-                            // Deseleccionar todos los buildings
-                            foreach(var selectedBuilding in mSelectedBuildings)
+                            Unit unit = mHit.collider.GetComponent<Unit>();
+
+                            if (unit != null)
                             {
-                                selectedBuilding.SetActive(false);
+                                // Se selecciono una unidad
+                                UnitManager.Instance.SetSelectedUnit(mHit.collider.transform);
+                            }else
+                            {
+                                // Deseleccionar todos los buildings
+                                foreach (var selectedBuilding in mSelectedBuildings)
+                                {
+                                    selectedBuilding.SetActive(false);
+                                }
+                                mSelectedBuildings.Clear();
+
+                                UnitManager.Instance.DeselectAllUnits();
+
                             }
+
                         }
                     }
                 }
                 
             }
             mMouseClicked = false;
+        }
+
+        if (mMouseRightClicked && UnitManager.Instance.IsUnitsSelected())
+        {
+            // Mover
+            if (!EventSystem.current.IsPointerOverGameObject())
+            {
+
+                Vector2 mousePos = mMouseMovementAction.ReadValue<Vector2>();
+
+                // Lanzar el Raycast
+                mRay = mCamera.ScreenPointToRay(mousePos);
+                if (Physics.Raycast(
+                    mRay,
+                    out mHit,
+                    1000f
+                    ))
+                {
+                    UnitManager.Instance.MoveUnits(mHit.point);
+                }
+            }
+            mMouseRightClicked = false;
         }
     }
 
@@ -93,12 +138,14 @@ public class BuildingManager : MonoBehaviour
         mPlayerInputActions.Player.MouseSelect.performed += OnMouseSelected;
         mPlayerInputActions.Player.TabPressed.performed += OnTabPressed;
         mPlayerInputActions.Player.EscPressed.performed += OnEscPressed;
+        mPlayerInputActions.Player.MouseDirection.performed += OnMouseRightClick;
         mPlayerInputActions.Enable();
     }
 
     private void OnEscPressed(InputAction.CallbackContext obj)
     {
         mCurrentBuilding = null;
+        mMode = Mode.Selection;
     }
 
     private void OnTabPressed(InputAction.CallbackContext obj)
@@ -115,6 +162,11 @@ public class BuildingManager : MonoBehaviour
         mMouseClicked = true;
     }
 
+    private void OnMouseRightClick(InputAction.CallbackContext obj)
+    {
+        mMouseRightClicked = true;
+    }
+
     private void OnDisable()
     {
         mPlayerInputActions.Disable();
@@ -129,6 +181,7 @@ public class BuildingManager : MonoBehaviour
     public void SetCurrentBuilding(BuildingTypeSO buildingType)
     {
         mCurrentBuilding = buildingType;
+        mMode = Mode.Builder;
     }
 
     private bool CanSpawnBuilding(Vector3 position, BuildingTypeSO building)

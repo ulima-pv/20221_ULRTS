@@ -10,6 +10,7 @@ public class UnitData
     public float damage;
     public float attackRange;
     public float currentHealth;
+    public float speed;
 }
 
 [CreateAssetMenu(menuName ="ScriptableObjects/UnitType")]

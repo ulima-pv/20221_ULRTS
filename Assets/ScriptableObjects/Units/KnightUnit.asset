@@ -21,3 +21,4 @@ MonoBehaviour:
     damage: 10
     attackRange: 0.5
     currentHealth: 100
+    speed: 5

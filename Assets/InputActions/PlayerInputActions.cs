@@ -80,6 +80,15 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""MouseDirection"",
+                    ""type"": ""Button"",
+                    ""id"": ""2cbed1eb-c21a-41b8-adc1-ae62dc9374ee"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -192,6 +201,17 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
                     ""action"": ""EscPressed"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""8cb16562-19ae-4f27-ac5a-a1750ddca391"",
+                    ""path"": ""<Mouse>/rightButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""MouseDirection"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -206,6 +226,7 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
         m_Player_CameraMovement = m_Player.FindAction("CameraMovement", throwIfNotFound: true);
         m_Player_CameraScroll = m_Player.FindAction("CameraScroll", throwIfNotFound: true);
         m_Player_EscPressed = m_Player.FindAction("EscPressed", throwIfNotFound: true);
+        m_Player_MouseDirection = m_Player.FindAction("MouseDirection", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -271,6 +292,7 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_CameraMovement;
     private readonly InputAction m_Player_CameraScroll;
     private readonly InputAction m_Player_EscPressed;
+    private readonly InputAction m_Player_MouseDirection;
     public struct PlayerActions
     {
         private @PlayerInputActions m_Wrapper;
@@ -281,6 +303,7 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
         public InputAction @CameraMovement => m_Wrapper.m_Player_CameraMovement;
         public InputAction @CameraScroll => m_Wrapper.m_Player_CameraScroll;
         public InputAction @EscPressed => m_Wrapper.m_Player_EscPressed;
+        public InputAction @MouseDirection => m_Wrapper.m_Player_MouseDirection;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -308,6 +331,9 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
                 @EscPressed.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnEscPressed;
                 @EscPressed.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnEscPressed;
                 @EscPressed.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnEscPressed;
+                @MouseDirection.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnMouseDirection;
+                @MouseDirection.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnMouseDirection;
+                @MouseDirection.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnMouseDirection;
             }
             m_Wrapper.m_PlayerActionsCallbackInterface = instance;
             if (instance != null)
@@ -330,6 +356,9 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
                 @EscPressed.started += instance.OnEscPressed;
                 @EscPressed.performed += instance.OnEscPressed;
                 @EscPressed.canceled += instance.OnEscPressed;
+                @MouseDirection.started += instance.OnMouseDirection;
+                @MouseDirection.performed += instance.OnMouseDirection;
+                @MouseDirection.canceled += instance.OnMouseDirection;
             }
         }
     }
@@ -342,5 +371,6 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
         void OnCameraMovement(InputAction.CallbackContext context);
         void OnCameraScroll(InputAction.CallbackContext context);
         void OnEscPressed(InputAction.CallbackContext context);
+        void OnMouseDirection(InputAction.CallbackContext context);
     }
 }
